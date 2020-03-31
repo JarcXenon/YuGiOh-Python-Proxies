@@ -1,13 +1,13 @@
 import requests, os
 
 def NameToCode(nom):
-    lien2 = 'https://db.ygoprodeck.com/api/v6/cardinfo.php?name=' + nom
+    lien2 = 'https://db.ygoprodeck.com/api/v6/cardinfo.php?fname=' + nom
     data = requests.get(lien2).content
     txt = str(data)
     debut = txt.find('id') + 4
     fin = txt.find(',"name"')
     return(txt[debut:fin])
-    
+
 if not os.path.isfile('decklist.txt') and os.path.isfile('decklist.ydk'):
     data = requests.get('https://db.ygoprodeck.com/api/v6/cardinfo.php').content
     txt = str(data)
@@ -23,7 +23,7 @@ if not os.path.isfile('decklist.txt') and os.path.isfile('decklist.ydk'):
                     debut = texte.find('name"') + 7
                     nom = texte[debut:fin]
                     g.write(nom + '\n')
-                    
+
 with open('decklist.txt', 'r') as f:
     with open('cards.tex', 'w') as g:
         lignes = f.readlines()
@@ -43,5 +43,5 @@ with open('decklist.txt', 'r') as f:
                     data = requests.get(lien).content
                     with open('images/'+ jpg, 'wb') as handle:
                         handle.write(data)
-                    
+
 os.system('pdflatex proxies.tex')
