@@ -22,7 +22,7 @@ if not os.path.isfile('decklist.txt') and os.path.isfile('decklist.ydk'):
                     fin = texte.find(',"type') - 1
                     debut = texte.find('name"') + 7
                     nom = texte[debut:fin]
-                    g.write(nom + '\n')
+                    g.write(nom.replace('\\','') + '\n')
 
 with open('decklist.txt', 'r') as f:
     with open('cards.tex', 'w') as g:
@@ -30,14 +30,18 @@ with open('decklist.txt', 'r') as f:
         i = 0
         for ligne in lignes:
             if ligne[0] != '#' and ligne != '\n':
-                g.write('\\'+'card{' + ligne[:-1].replace(' ','_').replace('/','_') + '}\n')
+                alpha=''
+                for char in ligne[:-1]:
+                    if char.isalpha() or char.isnumeric():
+                        alpha+=char
+                g.write('\\'+'card{' + alpha + '}\n')
                 i += 1
                 if i == 3:
                     g.write('\\'+'\\'+'[-0.3mm]\n')
                     i = 0
                 nom = ligne[:-1]
                 code = NameToCode(nom)
-                jpg = nom.replace(' ','_').replace('/','_') + '.jpg'
+                jpg = alpha + '.jpg'
                 lien = 'https://storage.googleapis.com/ygoprodeck.com/pics/' + code + '.jpg'
                 if not os.path.isfile('images/'+ jpg):
                     data = requests.get(lien).content
